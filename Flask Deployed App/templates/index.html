@@ -1,0 +1,264 @@
+{% extends 'base.html' %}
+{% block pagetitle %}
+AI Engine
+{% endblock pagetitle %}
+
+{% block body %}
+<style>
+  /* Page & Hero Styles */
+  .hero-section {
+    padding-top: 2rem;
+  }
+
+  .hero-title {
+    font-weight: 700;
+    color: rgb(4, 54, 4);
+  }
+
+  .hero-subtitle {
+    font-weight: 500;
+    color: black;
+  }
+
+  /* Content Card Styles */
+  .content-card {
+    height: 100%; /* Makes cards in a row equal height */
+  }
+
+  .plant-image {
+    width: 200px;
+    height: 300px;
+    object-fit: contain; /* Changed to 'contain' to ensure the whole image fits */
+  }
+
+  /* Custom File Input Styles */
+  .file-upload-container {
+    text-align: center;
+  }
+
+  .file-upload-container input[type="file"] {
+    display: none; /* Hide the actual input */
+  }
+
+  .file-upload-label,
+  .camera-btn {
+    display: inline-block;
+    padding: 8px 16px;
+    margin: 4px;
+    font-weight: 600;
+    color: #fff;
+    background-color: #0d6efd;
+    border: none;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+
+  .file-upload-label:hover {
+    background-color: #0b5ed7;
+  }
+
+  .camera-btn {
+    background-color: #6c757d;
+  }
+
+  .camera-btn:hover {
+    background-color: #5c636a;
+  }
+
+  #file-chosen {
+    display: block;
+    margin-top: 10px;
+    font-style: italic;
+    color: #555;
+  }
+
+  /* Camera Feed Styles */
+  #camera-container {
+    display: none;
+    margin-top: 15px;
+    position: relative;
+    max-width: 320px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  #camera-feed {
+    width: 100%;
+    border-radius: 8px;
+  }
+
+  #capture-btn {
+    width: 100%;
+    margin-top: 5px;
+  }
+
+  /* Preview Image */
+  #preview {
+    display: none;
+    max-width: 100%;
+    margin-top: 15px;
+    border-radius: 8px;
+    border: 2px solid #ddd;
+  }
+</style>
+
+<div class="container">
+  <div class="row mb-5 text-center hero-section">
+    <div class="col-lg-10 mx-auto">
+      <h1 class="display-4 hero-title">🍀 AI Engine 🍀</h1>
+      <p class="lead hero-subtitle">Our AI Engine Will Help You Detect Plant Diseases</p>
+    </div>
+  </div>
+  <div class="row g-4">
+    <div class="col-lg-4 col-md-6 mb-4">
+      <div class="p-5 bg-white shadow rounded-lg content-card">
+        <h5><b>Why detect plant disease?</b></h5>
+        <p>
+          Plant diseases affect species growth. Early diagnosis is crucial. Without proper identification of the disease and its cause, control measures can be a waste of time and money, leading to further plant losses. Proper disease diagnosis is necessary to ensure a healthy harvest and ecosystem.
+        </p>
+      </div>
+    </div>
+
+    <div class="col-lg-4 col-md-6 mb-4">
+      <div class="p-5 bg-white shadow rounded-lg content-card">
+        
+        <img src="https://cdn.pixabay.com/photo/2020/03/24/18/31/plant-4964998_960_720.png"
+          alt="Illustration of a potted plant" height="300" width="200" class="d-block mx-auto mb-4 rounded-pill plant-image">
+
+        <form action="/submit" method="POST" enctype="multipart/form-data">
+          <div class="file-upload-container">
+            <input type="file" id="actual-btn" name="image" accept="image/*" />
+            <label for="actual-btn" class="file-upload-label">Choose File</label>
+            <button type="button" id="camera-btn" class="camera-btn">Open Camera</button>
+            <span id="file-chosen">No file chosen</span>
+          </div>
+
+          <div id="camera-container">
+            <video id="camera-feed" width="320" height="240" autoplay></video>
+            <button type="button" id="capture-btn" class="btn btn-danger">Capture Photo</button>
+          </div>
+
+          <img id="preview" src="#" alt="Camera Photo Preview" />
+          
+          <h6 class="text-center my-4 text-muted">
+            Upload your plant's leaf image to see the magic of AI.
+          </h6>
+
+          <div class="text-center">
+            <button type="submit" class="btn btn-success px-4">Submit</button>
+          </div>
+        </form>
+        </div>
+    </div>
+
+    <div class="col-lg-4 col-md-12 mb-4"> <div class="p-5 bg-white shadow rounded-lg content-card">
+        <h5><b>How to Prevent Plant Disease:</b></h5>
+        <ol>
+          <li>Follow Good Sanitation Practices.</li>
+          <li>Fertilize to Keep Your Plants Healthy.</li>
+          <li>Inspect Plants for Diseases Before You Buy.</li>
+          <li>Allow the Soil to Warm Before Planting.</li>
+          <li>Ensure a Healthy Garden By Rotating Crops.</li>
+          <li>Provide Good Air Circulation.</li>
+          <li>Remove Diseased Stems and Foliage.</li>
+        </ol>
+        <a target="_blank" href="https://www.thespruce.com/prevent-plant-diseases-in-your-garden-2539511"
+          class="btn btn-outline-success">More Info</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const actualBtn = document.getElementById('actual-btn');
+  const fileChosen = document.getElementById('file-chosen');
+  const cameraBtn = document.getElementById('camera-btn');
+  const cameraContainer = document.getElementById('camera-container');
+  const cameraFeed = document.getElementById('camera-feed');
+  const captureBtn = document.getElementById('capture-btn');
+  const preview = document.getElementById('preview');
+  
+  let streamObject = null; // To store the camera stream
+
+  // Listener for file input button
+  actualBtn.addEventListener('change', function () {
+    fileChosen.textContent = this.files[0].name;
+    preview.style.display = 'none'; // Hide preview if user selects a file
+    stopCamera(); // Stop camera if it's on
+  });
+
+  // Listener for camera button
+  cameraBtn.addEventListener('click', function () {
+    cameraContainer.style.display = 'block';
+    startCamera();
+  });
+
+  // Start the camera feed
+  function startCamera() {
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then(function (stream) {
+        streamObject = stream; // Store the stream
+        cameraFeed.srcObject = stream;
+      })
+      .catch(function (error) {
+        console.log('Error accessing the camera: ', error);
+        fileChosen.textContent = "Error: Could not access camera.";
+      });
+  }
+
+  // Stop the camera feed
+  function stopCamera() {
+    if (streamObject) {
+      streamObject.getTracks().forEach(track => track.stop());
+      streamObject = null;
+      cameraContainer.style.display = 'none';
+    }
+  }
+
+  // Capture photo from the camera feed
+  captureBtn.addEventListener('click', function () {
+    const canvas = document.createElement('canvas');
+    canvas.width = cameraFeed.videoWidth;
+    canvas.height = cameraFeed.videoHeight;
+    canvas.getContext('2d').drawImage(cameraFeed, 0, 0, canvas.width, canvas.height);
+
+    // Convert the canvas image to a data URL
+    const dataUrl = canvas.toDataURL('image/jpeg');
+
+    // Show the captured image preview
+    preview.src = dataUrl;
+    preview.style.display = 'block';
+
+    // Convert data URL to a File object
+    const imageBlob = dataURItoBlob(dataUrl);
+    const capturedFile = new File([imageBlob], "camera_image.jpg", { type: 'image/jpeg' });
+
+    // Create a DataTransfer object to hold the file
+    const dataTransfer = new DataTransfer();
+    dataTransfer.items.add(capturedFile);
+
+    // Assign the captured file to the hidden file input
+    actualBtn.files = dataTransfer.files;
+    
+    // Update the file chosen text
+    fileChosen.textContent = capturedFile.name;
+
+    // Stop the camera
+    stopCamera();
+  });
+
+  // Helper function to convert data URL to Blob
+  function dataURItoBlob(dataURI) {
+    const byteString = atob(dataURI.split(',')[1]);
+    const arrayBuffer = new ArrayBuffer(byteString.length);
+    const uintArray = new Uint8Array(arrayBuffer);
+    for (let i = 0; i < byteString.length; i++) {
+      uintArray[i] = byteString.charCodeAt(i);
+    }
+    return new Blob([uintArray], { type: 'image/jpeg' });
+  }
+
+</script>
+
+{% endblock body %}

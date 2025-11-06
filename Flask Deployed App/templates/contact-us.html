@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% block pagetitle %}
+Contact Us
+{% endblock pagetitle %}
+
+{% block body %}
+
+<style>
+    .contact-form {
+        background-color: #40a84b;
+        padding: 40px;
+        border-radius: 12px;
+        color: #fff;
+        max-width: 700px;
+        margin: 0 auto;
+        box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+    }
+
+    .contact-form h2 {
+        color: #fff;
+        font-weight: 600;
+        margin-bottom: 25px;
+    }
+
+    .form-label {
+        color: #ff4b4b;
+        font-weight: 600;
+        font-size: 14px;
+        background-color: #0d0d0d;
+        padding: 0 6px;
+        position: relative;
+        top: 12px;
+        left: 12px;
+    }
+
+    .form-control {
+        background-color: #a4dc86;
+        border: 1px solid #fff;
+        color: #fff;
+        border-radius: 4px;
+        padding: 12px;
+        width: 100%;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: #ff4b4b;
+    }
+
+    .send-btn {
+        background-color: #ff4b4b;
+        color: white;
+        border: none;
+        padding: 12px 35px;
+        border-radius: 25px;
+        font-weight: 600;
+        margin-top: 15px;
+    }
+
+    .send-btn:hover {
+        background-color: #e43e3e;
+    }
+</style>
+
+<div class="text-center mb-5">
+    <h1 class="display-4" style="padding-top: 2%; font-weight: 400; color: rgb(4, 54, 4);">
+        <b>📞 Contact Form 📞</b>
+    </h1>
+    <p class="lead" style="font-weight: 500; color: black;">
+        We’d love to hear from you! Please fill out the form below.
+    </p>
+</div>
+
+<div class="contact-form">
+    <form method="POST" action="/contact">
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Name</label>
+                <input type="text" class="form-control" placeholder="Full Name" name="name" required>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-control" placeholder="Email Address" name="email" required>
+            </div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Your Message</label>
+            <textarea class="form-control" rows="5" placeholder="Your Message" name="message" required></textarea>
+        </div>
+        <button type="submit" class="send-btn">SEND MESSAGE →</button>
+    </form>
+</div>
+
+{% endblock body %}
