@@ -36,10 +36,10 @@
 
 ## ⭐Snippet of Web App :
 #### Main page
-<img src = "demo_images/1.png" > <br>
+<img src = "demo_images/1.jpeg" > <br>
 #### AI Engine 
-<img src = "demo_images/2.png"> <br>
+<img src = "demo_images/2.jpeg"> <br>
 #### Supplements/Fertilizer  Store
-<img src = "demo_images/3.JPG"> <br>
+<img src = "demo_images/3.jpeg"> <br>
 #### Contact Us 
-<img src = "demo_images/4.png"> <br><br>
+<img src = "demo_images/4.jpeg"> <br><br>
